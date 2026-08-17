@@ -1,0 +1,28 @@
+name: Compile Hermes Bundle
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Hermes
+        run: npm install hermes-engine@0.11.0
+
+      - name: Compile JS to Android Bundle
+        run: |
+          ./node_modules/hermes-engine/linux64-bin/hermesc -emit-binary -out index.android.bundle index.android.js
+
+      - name: Save Compiled File
+        uses: actions/upload-artifact@v4
+        with:
+          name: compiled-bundle
+          path: index.android.bundle
+          
